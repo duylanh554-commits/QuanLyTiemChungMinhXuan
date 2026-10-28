@@ -1,0 +1,86 @@
+﻿@{
+    ViewData["Title"] = "Đăng ký tiêm chủng";
+    var dotTiemList = ViewBag.DotTiemList as List<QuanLyTiemChungMinhXuan.Models.DotTiemChung>;
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-0 shadow">
+            <div class="card-header bg-primary text-white py-3">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-file-earmark-medical me-2"></i>PHIẾU ĐĂNG KÝ TIÊM CHỦNG TRỰC TUYẾN - PHƯỜNG MINH XUÂN</h5>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="DangKyTiem" method="post">
+                    <h6 class="fw-bold text-primary border-bottom pb-2 mb-3">1. Thông tin cá nhân người tiêm</h6>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Họ và tên người tiêm <span class="text-danger">*</span></label>
+                            <input type="text" name="HoTen" class="form-control" placeholder="VD: Nguyễn Văn A" required />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Ngày sinh <span class="text-danger">*</span></label>
+                            <input type="date" name="NgaySinh" class="form-control" required />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Giới tính</label>
+                            <select name="GioiTinh" class="form-select">
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Số CCCD / Mã định danh cá nhân <span class="text-danger">*</span></label>
+                            <input type="text" name="CCCD" class="form-control" placeholder="Nhập 12 số CCCD..." required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Số điện thoại liên hệ <span class="text-danger">*</span></label>
+                            <input type="text" name="SoDienThoai" class="form-control" placeholder="09xxxx..." required />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Tổ dân phố (P. Minh Xuân)</label>
+                            <select name="ToDanPho" class="form-select">
+                                @for (int i = 1; i <= 18; i++)
+                                {
+                                    <option value="Tổ @i">Tổ dân phố @i</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label fw-semibold">Địa chỉ chi tiết (Số nhà, tên đường)</label>
+                            <input type="text" name="DiaChiChiTiet" class="form-control" placeholder="VD: Số 51 Đường Hà Huy Tập, Phường Minh Xuân" required />
+                        </div>
+                    </div>
+
+                    <h6 class="fw-bold text-primary border-bottom pb-2 mb-3 mt-4">2. Chọn đợt tiêm & Mũi tiêm</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-9">
+                            <label class="form-label fw-semibold">Chọn Đợt tiêm chủng tại Trạm Y tế <span class="text-danger">*</span></label>
+                            <select name="MaDot" class="form-select" required>
+                                @if (dotTiemList != null)
+                                {
+                                    foreach (var d in dotTiemList)
+                                    {
+                                        bool isSelected = (ViewBag.SelectedDot != null && (int)ViewBag.SelectedDot == d.MaDot);
+                                        <option value="@d.MaDot" selected="@isSelected">
+                                            [@d.NgayTiem.ToString("dd/MM/yyyy")] @d.TenDot - Vắc xin: @d.MaVacXinNavigation?.TenVacXin
+                                        </option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Đăng ký mũi thứ mấy?</label>
+                            <input type="number" name="MuiTiemSo" class="form-control" value="1" min="1" max="5" required />
+                        </div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold">
+                            <i class="bi bi-send-check-fill me-2"></i>HOÀN TẤT ĐĂNG KÝ TIÊM CHỦNG
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

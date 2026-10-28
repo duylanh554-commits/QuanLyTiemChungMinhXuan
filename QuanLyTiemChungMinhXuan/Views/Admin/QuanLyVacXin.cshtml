@@ -1,0 +1,81 @@
+﻿@model IEnumerable<QuanLyTiemChungMinhXuan.Models.VacXin>
+@{
+    ViewData["Title"] = "Quản lý Kho Vắc-xin";
+}
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white fw-bold">NHẬP LÔ VẮC-XIN MỚI</div>
+            <div class="card-body">
+                <form asp-action="ThemVacXin" method="post">
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold">Tên Vắc-xin</label>
+                        <input type="text" name="TenVacXin" class="form-control" required />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold">Phòng bệnh</label>
+                        <input type="text" name="PhongBenh" class="form-control" required />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold">Nhà sản xuất / Quốc gia</label>
+                        <input type="text" name="NhaSanXuat" class="form-control" required />
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label class="form-label small fw-bold">Số lô</label>
+                            <input type="text" name="SoLo" class="form-control" required />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold">Số lượng liều</label>
+                            <input type="number" name="SoLuongTon" class="form-control" value="100" required />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Hạn sử dụng</label>
+                        <input type="date" name="HanSuDung" class="form-control" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">Nhập Kho Vắc-xin</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-bold">DANH MỤC VẮC-XIN TẠI TRẠM Y TẾ MINH XUÂN</div>
+            <div class="card-body">
+                <table class="table table-bordered align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Tên Vắc-xin</th>
+                            <th>Phòng bệnh</th>
+                            <th>Số lô</th>
+                            <th>Tồn kho</th>
+                            <th>Hạn dùng</th>
+                            <th>Xóa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var v in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold text-primary">@v.TenVacXin<br /><small class="text-muted">@v.NhaSanXuat</small></td>
+                                <td>@v.PhongBenh</td>
+                                <td><code>@v.SoLo</code></td>
+                                <td class="fw-bold text-success">@v.SoLuongTon liều</td>
+                                <td>@v.HanSuDung.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <form asp-action="XoaVacXin" method="post">
+                                        <input type="hidden" name="id" value="@v.MaVacXin" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

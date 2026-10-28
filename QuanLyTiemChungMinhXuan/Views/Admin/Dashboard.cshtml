@@ -1,0 +1,118 @@
+﻿@model IEnumerable<QuanLyTiemChungMinhXuan.Models.PhieuDangKy>
+@{
+    ViewData["Title"] = "Bảng điều khiển Quản trị Y tế";
+}
+
+@if (TempData["Msg"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check2-circle me-2"></i>@TempData["Msg"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold text-primary mb-0"><i class="bi bi-speedometer2 me-2"></i>QUẢN TRỊ TIÊM CHỦNG - TRẠM Y TẾ PHƯỜNG MINH XUÂN</h4>
+    <div>
+        <a asp-action="QuanLyVacXin" class="btn btn-outline-primary btn-sm fw-bold me-2"><i class="bi bi-capsule me-1"></i>Kho Vắc-xin</a>
+        <a asp-action="QuanLyDotTiem" class="btn btn-primary btn-sm fw-bold"><i class="bi bi-calendar-plus me-1"></i>Tạo Đợt Tiêm Mới</a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white border-0 shadow-sm">
+            <div class="card-body">
+                <h6 class="text-uppercase small">Hồ sơ Người dân</h6>
+                <h2 class="fw-bold mb-0">@ViewBag.TongNguoiDan</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white border-0 shadow-sm">
+            <div class="card-body">
+                <h6 class="text-uppercase small">Tổng liều Vắc-xin tồn kho</h6>
+                <h2 class="fw-bold mb-0">@ViewBag.TongVacXin</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-dark border-0 shadow-sm">
+            <div class="card-body">
+                <h6 class="text-uppercase small">Phiếu chờ duyệt</h6>
+                <h2 class="fw-bold mb-0">@ViewBag.TongPhieuCho</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-dark border-0 shadow-sm">
+            <div class="card-body">
+                <h6 class="text-uppercase small">Ca đã tiêm thành công</h6>
+                <h2 class="fw-bold mb-0">@ViewBag.TongDaTiem</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white py-3">
+        <h5 class="mb-0 fw-bold">DANH SÁCH ĐĂNG KÝ & GHI NHẬN KẾT QUẢ SAU TIÊM</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Mã</th>
+                        <th>Họ tên & CCCD</th>
+                        <th>Địa chỉ</th>
+                        <th>Đợt tiêm / Vắc-xin</th>
+                        <th>Trạng thái</th>
+                        <th>Cập nhật Khám sàng lọc & Kết quả tiêm</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold">#@item.MaPhieu</td>
+                            <td>
+                                <strong>@item.MaNguoiDanNavigation?.HoTen</strong><br />
+                                <small class="text-muted">CCCD: @item.MaNguoiDanNavigation?.Cccd | SĐT: @item.MaNguoiDanNavigation?.SoDienThoai</small>
+                            </td>
+                            <td>@item.MaNguoiDanNavigation?.ToDanPho</td>
+                            <td>
+                                <span class="fw-semibold text-primary">@item.MaDotNavigation?.MaVacXinNavigation?.TenVacXin (Mũi @item.MuiTiemSo)</span><br />
+                                <small class="text-muted">Ngày: @item.MaDotNavigation?.NgayTiem.ToString("dd/MM/yyyy")</small>
+                            </td>
+                            <td>
+                                <span class="badge @(item.TrangThai == "Đã tiêm" ? "bg-success" : item.TrangThai == "Đã duyệt" ? "bg-primary" : "bg-warning text-dark")">
+                                    @item.TrangThai
+                                </span>
+                            </td>
+                            <td>
+                                <form asp-action="CapNhatTrangThaiPhieu" method="post" class="row g-1">
+                                    <input type="hidden" name="maPhieu" value="@item.MaPhieu" />
+                                    <div class="col-md-4">
+                                        <select name="trangThaiMoi" class="form-select form-select-sm">
+                                            <option value="Chờ duyệt" selected="@(item.TrangThai == "Chờ duyệt")">Chờ duyệt</option>
+                                            <option value="Đã duyệt" selected="@(item.TrangThai == "Đã duyệt")">Duyệt lịch hẹn</option>
+                                            <option value="Đã tiêm" selected="@(item.TrangThai == "Đã tiêm")">Xác nhận Đã tiêm (-1 kho)</option>
+                                            <option value="Đã hủy" selected="@(item.TrangThai == "Đã hủy")">Hủy phiếu</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="text" name="tinhTrangSauTiem" value="@item.TinhTrangSauTiem" class="form-control form-control-sm" placeholder="Phản ứng sau tiêm..." />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="submit" class="btn btn-sm btn-success w-100 fw-bold">Lưu</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

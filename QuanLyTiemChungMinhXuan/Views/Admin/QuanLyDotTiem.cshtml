@@ -1,0 +1,83 @@
+﻿@model IEnumerable<QuanLyTiemChungMinhXuan.Models.DotTiemChung>
+@{
+    ViewData["Title"] = "Quản lý Đợt tiêm chủng";
+    var vacXins = ViewBag.VacXins as List<QuanLyTiemChungMinhXuan.Models.VacXin>;
+}
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-success text-white fw-bold">TẠO ĐỢT TIÊM CHỦNG MỚI</div>
+            <div class="card-body">
+                <form asp-action="ThemDotTiem" method="post">
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold">Tên chiến dịch / Đợt tiêm</label>
+                        <input type="text" name="TenDot" class="form-control" placeholder="VD: Tiêm chủng mở rộng đợt 2..." required />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold">Chọn Vắc-xin sử dụng</label>
+                        <select name="MaVacXin" class="form-select" required>
+                            @if (vacXins != null)
+                            {
+                                foreach (var vx in vacXins)
+                                {
+                                    <option value="@vx.MaVacXin">@vx.TenVacXin (Tồn: @vx.SoLuongTon)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label class="form-label small fw-bold">Ngày tổ chức</label>
+                            <input type="date" name="NgayTiem" class="form-control" required />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold">Số lượng tối đa</label>
+                            <input type="number" name="SoLuongToiDa" class="form-control" value="100" required />
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold">Địa điểm tiêm</label>
+                        <input type="text" name="DiaDiem" class="form-control" value="Trạm Y tế Phường Minh Xuân" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Ghi chú hướng dẫn người dân</label>
+                        <input type="text" name="GhiChu" class="form-control" value="Mang theo CCCD gắn chip" />
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 fw-bold">Ban Hành Đợt Tiêm</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-bold">DANH SÁCH CÁC ĐỢT TIÊM CHỦNG ĐÃ LẬP</div>
+            <div class="card-body">
+                <table class="table table-bordered align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Ngày tiêm</th>
+                            <th>Tên Đợt tiêm</th>
+                            <th>Vắc-xin</th>
+                            <th>Địa điểm</th>
+                            <th>Chỉ tiêu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var d in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold text-primary">@d.NgayTiem.ToString("dd/MM/yyyy")</td>
+                                <td class="fw-semibold">@d.TenDot</td>
+                                <td>@d.MaVacXinNavigation?.TenVacXin</td>
+                                <td>@d.DiaDiem</td>
+                                <td>@d.SoLuongToiDa liều</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

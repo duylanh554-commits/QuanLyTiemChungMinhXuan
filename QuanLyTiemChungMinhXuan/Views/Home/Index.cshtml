@@ -1,0 +1,55 @@
+﻿@model IEnumerable<QuanLyTiemChungMinhXuan.Models.DotTiemChung>
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<div class="hero-banner shadow mb-4">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <span class="badge bg-warning text-dark mb-2 px-3 py-2">CỔNG Y TẾ ĐIỆN TỬ PHƯỜNG MINH XUÂN</span>
+            <h2 class="fw-bold mb-3">Đăng Ký Tiêm Chủng & Tra Cứu Hồ Sơ Trực Tuyến</h2>
+            <p class="mb-4">Giúp người dân trên địa bàn 18 Tổ dân phố thuộc Phường Minh Xuân chủ động đặt lịch hẹn tiêm vắc-xin, giảm thiểu thời gian chờ đợi tại Trạm Y tế và theo dõi lịch sử tiêm chủng cá nhân.</p>
+            <a asp-action="DangKyTiem" class="btn btn-light text-primary fw-bold px-4 py-2 me-2 shadow-sm">
+                <i class="bi bi-calendar-plus me-1"></i>Đăng Ký Tiêm Ngay
+            </a>
+            <a asp-action="TraCuu" class="btn btn-outline-light fw-bold px-4 py-2">
+                <i class="bi bi-search me-1"></i>Tra Cứu Chứng Nhận Tiêm
+            </a>
+        </div>
+        <div class="col-md-4 text-center d-none d-md-block">
+            <i class="bi bi-shield-plus" style="font-size: 6.5rem; opacity: 0.9;"></i>
+        </div>
+    </div>
+</div>
+
+<h4 class="fw-bold text-primary mb-3"><i class="bi bi-megaphone-fill me-2"></i>CÁC ĐỢT TIÊM CHỦNG ĐANG MỞ ĐĂNG KÝ</h4>
+
+<div class="row g-4">
+    @foreach (var item in Model)
+    {
+        int daDangKy = item.PhieuDangKies?.Count(p => p.TrangThai != "Đã hủy") ?? 0;
+        int conTrong = item.SoLuongToiDa - daDangKy;
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm card-hover">
+                <div class="card-header bg-white border-bottom-0 pt-3">
+                    <span class="badge bg-primary"><i class="bi bi-calendar-event me-1"></i>Ngày tiêm: @item.NgayTiem.ToString("dd/MM/yyyy")</span>
+                    <span class="badge bg-success float-end">Còn @conTrong suất</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-dark">@item.TenDot</h5>
+                    <p class="mb-2 text-muted small"><i class="bi bi-geo-alt-fill text-danger me-1"></i>@item.DiaDiem</p>
+                    <hr class="my-2" />
+                    <p class="mb-1"><strong>Vắc-xin:</strong> <span class="text-primary fw-semibold">@item.MaVacXinNavigation?.TenVacXin</span></p>
+                    <p class="mb-1"><strong>Phòng bệnh:</strong> @item.MaVacXinNavigation?.PhongBenh</p>
+                    <p class="mb-1"><strong>Nguồn gốc:</strong> @item.MaVacXinNavigation?.NhaSanXuat</p>
+                    <p class="mb-0 text-muted small fst-italic mt-2"><i class="bi bi-info-circle me-1"></i>Lưu ý: @item.GhiChu</p>
+                </div>
+                <div class="card-footer bg-white border-top-0 pb-3">
+                    <a asp-action="DangKyTiem" asp-route-maDot="@item.MaDot" class="btn btn-primary w-100 fw-semibold">
+                        <i class="bi bi-check2-circle me-1"></i>Chọn Đợt Tiêm Này
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

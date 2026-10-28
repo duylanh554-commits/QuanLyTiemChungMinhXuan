@@ -1,0 +1,91 @@
+﻿@model IEnumerable<QuanLyTiemChungMinhXuan.Models.PhieuDangKy>
+@{
+    ViewData["Title"] = "Tra cứu sổ tiêm chủng";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show shadow-sm">
+        <i class="bi bi-check-circle-fill me-2"></i><strong>Thành công!</strong> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-4">
+        <h4 class="fw-bold text-primary mb-3"><i class="bi bi-qr-code-scan me-2"></i>TRA CỨU LỊCH SỬ & CHỨNG NHẬN TIÊM CHỦNG</h4>
+        <form asp-action="TraCuu" method="get" class="row g-2">
+            <div class="col-md-9">
+                <input type="text" name="cccd" value="@ViewBag.TuKhoa" class="form-control form-control-lg" placeholder="Nhập số CCCD/Mã định danh hoặc Số điện thoại (VD mẫu: 008098001234)..." required />
+            </div>
+            <div class="col-md-3 d-grid">
+                <button type="submit" class="btn btn-primary btn-lg fw-bold"><i class="bi bi-search me-1"></i>Tra cứu ngay</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(ViewBag.TuKhoa))
+{
+    if (!Model.Any())
+    {
+        <div class="alert alert-warning">Không tìm thấy hồ sơ tiêm chủng nào khớp với mã tra cứu: <strong>@ViewBag.TuKhoa</strong></div>
+    }
+    else
+    {
+        var nguoiDan = Model.First().MaNguoiDanNavigation;
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-success text-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-person-vcard me-2"></i>HỒ SƠ TIÊM CHỦNG CÔNG DÂN: @nguoiDan?.HoTen.ToUpper()</h5>
+                <span class="badge bg-light text-dark">CCCD: @nguoiDan?.Cccd | @nguoiDan?.ToDanPho - P. Minh Xuân</span>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Mã Phiếu</th>
+                                <th>Đợt tiêm chủng</th>
+                                <th>Loại Vắc-xin</th>
+                                <th>Mũi số</th>
+                                <th>Ngày hẹn tiêm</th>
+                                <th>Trạng thái</th>
+                                <th>Theo dõi sau tiêm & Bác sĩ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var p in Model)
+                            {
+                                <tr>
+                                    <td class="fw-bold">#@p.MaPhieu</td>
+                                    <td>@p.MaDotNavigation?.TenDot</td>
+                                    <td class="fw-semibold text-primary">@p.MaDotNavigation?.MaVacXinNavigation?.TenVacXin</td>
+                                    <td class="text-center"><span class="badge bg-info text-dark">Mũi @p.MuiTiemSo</span></td>
+                                    <td>@p.MaDotNavigation?.NgayTiem.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        @if (p.TrangThai == "Đã tiêm")
+                                        {
+                                            <span class="badge bg-success"><i class="bi bi-check-all me-1"></i>Đã tiêm chủng</span>
+                                        }
+                                        else if (p.TrangThai == "Đã duyệt")
+                                        {
+                                            <span class="badge bg-primary">Đã duyệt lịch hẹn</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <small class="d-block"><strong>Phản ứng:</strong> @p.TinhTrangSauTiem</small>
+                                        <small class="text-muted"><strong>Cán bộ:</strong> @(p.CanBoTiem ?? "Chưa cập nhật")</small>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+}

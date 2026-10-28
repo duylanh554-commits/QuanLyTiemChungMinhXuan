@@ -1,0 +1,86 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Cổng Tiêm Chủng Phường Minh Xuân</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f4f7fb; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .navbar-custom { background: linear-gradient(90deg, #0052d4, #4364f7, #6fb1fc); }
+        .hero-banner { background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%); color: white; border-radius: 15px; padding: 35px; }
+        .card-hover:hover { transform: translateY(-4px); transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+    </style>
+</head>
+<body>
+    @{
+        var vaiTro = HttpContextAccessor.HttpContext?.Session.GetString("VaiTro");
+        var hoTen = HttpContextAccessor.HttpContext?.Session.GetString("HoTen");
+    }
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-hospital-fill me-2"></i>TRẠM Y TẾ PHƯỜNG MINH XUÂN
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-semibold" asp-controller="Home" asp-action="Index"><i class="bi bi-calendar2-check me-1"></i>Lịch tiêm chủng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-semibold" asp-controller="Home" asp-action="DangKyTiem"><i class="bi bi-pencil-square me-1"></i>Đăng ký tiêm</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-semibold" asp-controller="Home" asp-action="TraCuu"><i class="bi bi-search me-1"></i>Tra cứu Sổ tiêm điện tử</a>
+                    </li>
+                    @if (vaiTro == "Admin")
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-warning fw-bold" href="#" data-bs-toggle="dropdown">
+                                <i class="bi bi-shield-lock-fill me-1"></i>QUẢN TRỊ Y TẾ
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="Admin" asp-action="Dashboard">Duyệt phiếu & Ghi nhận tiêm</a></li>
+                                <li><a class="dropdown-item" asp-controller="Admin" asp-action="QuanLyVacXin">Quản lý Kho Vắc-xin</a></li>
+                                <li><a class="dropdown-item" asp-controller="Admin" asp-action="QuanLyDotTiem">Lập Kế hoạch / Đợt tiêm</a></li>
+                            </ul>
+                        </li>
+                    }
+                </ul>
+                <div class="d-flex align-items-center">
+                    @if (!string.IsNullOrEmpty(hoTen))
+                    {
+                        <span class="text-white me-3"><i class="bi bi-person-circle me-1"></i>Xin chào, <strong>@hoTen</strong></span>
+                        <a asp-controller="Home" asp-action="DangXuat" class="btn btn-sm btn-light text-danger fw-bold">Đăng xuất</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Home" asp-action="DangNhap" class="btn btn-warning fw-bold btn-sm">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Cán bộ Đăng nhập
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4" style="min-height: 75vh;">
+        @RenderBody()
+    </div>
+
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <div class="container">
+            <p class="mb-0 fw-bold">HỆ THỐNG QUẢN LÝ TIÊM CHỦNG TRỰC TUYẾN - TRẠM Y TẾ PHƯỜNG MINH XUÂN</p>
+            <small class="text-secondary">Địa chỉ: Phường Minh Xuân, TP. Tuyên Quang, Tỉnh Tuyên Quang | Hotline Y tế: 0207.3.xxx.xxx</small>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
